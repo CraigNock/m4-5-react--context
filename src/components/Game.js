@@ -43,6 +43,10 @@ const Game = () => {
     };
   });
 
+  //retrieve date from local
+  //make new date, override
+  //use newdate , setnnumCookies num + (new-old *1000)*persecond
+
   return (
     <Wrapper>
       <GameArea>
