@@ -28,6 +28,24 @@ export const GameProvider = ({ children }) => {
         farm: 0
     }, "purchased-items");
 
+//maybe?
+    // const [time, setTime] = usePersistedState(new Date(), "last-date");
+    // React.useEffect(() => {
+    //     let date = new Date();
+    //     let diff = Math.abs(date - time);
+    //     let cookieHaul = Math.floor(diff/1000)*(calculateCookiesPerSecond(purchasedItems)) + numCookies;
+    //     setNumCookies(cookieHaul);
+        
+    //     return () => {
+    //         setTime(new Date());
+    //     };
+    // }, []);
+    //on mount ^
+    //on dismount: setTime(new Date)
+    
+
+
+
     //COOKIES PER SECOND
     const calculateCookiesPerSecond = purchasedItems => {
         return Object.keys(purchasedItems).reduce((acc, itemId) => {
