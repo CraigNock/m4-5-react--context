@@ -29,17 +29,17 @@ export const GameProvider = ({ children }) => {
     }, "purchased-items");
 
 //maybe?
-    // const [time, setTime] = usePersistedState(new Date(), "last-date");
-    // React.useEffect(() => {
-    //     let date = new Date();
-    //     let diff = Math.abs(date - time);
-    //     let cookieHaul = Math.floor(diff/1000)*(calculateCookiesPerSecond(purchasedItems)) + numCookies;
-    //     setNumCookies(cookieHaul);
+    const [time, setTime] = usePersistedState(new Date(), "last-date");
+    React.useEffect(() => {
+        let date = new Date();
+        let diff = Math.abs(date - time);//maybe a string, console logs man
+        let cookieHaul = Math.floor(diff/1000)*(calculateCookiesPerSecond(purchasedItems)) + numCookies;
+        setNumCookies(cookieHaul);
         
-    //     return () => {
-    //         setTime(new Date());
-    //     };
-    // }, []);
+        return () => {
+            setTime(new Date());
+        };
+    }, []);
     //on mount ^
     //on dismount: setTime(new Date)
     
