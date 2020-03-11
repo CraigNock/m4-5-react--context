@@ -156,6 +156,52 @@ const ContactPage = () => {
     </div>
   );
 };
+
+///////////
+
+
+const TextArea = () => {
+  const [message, setMessage] = React.useState('');
+  const [messageError, setMessageError] = React.useState(false);
+
+  return (
+    <>
+      <label>
+        Message:
+        <textarea
+          value={message}
+          onChange={ev => {
+            setMessage(ev.target.value);
+
+            if (ev.target.value.length < 100) {
+              setMessageError(true);
+            } else {
+              setMessageError(false);
+            }
+          }}
+        />
+      </label>
+      {messageError && ( ///could be it's own component
+        <p className="error">Please enter at least 100 characters.</p>
+      )}
+    </>
+  );
+}
+
+const ContactPage = () => {
+  return (
+    <div>
+      <Header />
+      <h1>Contact Us</h1>
+      <p>
+        We're looking forward to hearing from you. Please fill in this contact
+        form:
+      </p>
+      <TextArea/>
+    </div>
+  );
+};
+
 ```
 
 ---

@@ -6,59 +6,38 @@ import useInterval from '../hooks/use-interval.hook';
 
 import cookieSrc from '../cookie.svg';
 import Item from './Item';
+import items from './Data';
+import {GameContext} from './GameContext';
 
-const items = [
-  { id: 'cursor', name: 'Cursor', cost: 10, value: 1 },
-  { id: 'grandma', name: 'Grandma', cost: 100, value: 10 },
-  { id: 'farm', name: 'Farm', cost: 1000, value: 80 }
-];
-
-const calculateCookiesPerSecond = purchasedItems => {
-  return Object.keys(purchasedItems).reduce((acc, itemId) => {
-    const numOwned = purchasedItems[itemId];
-    const item = items.find(item => item.id === itemId);
-    const value = item.value;
-
-    return acc + value * numOwned;
-  }, 0);
-};
 
 const Game = () => {
-  const [numCookies, setNumCookies] = React.useState(1000);
+  //CONTEXT
+  const {numCookies, setNumCookies, purchasedItems, setPurchasedItems, calculateCookiesPerSecond} = React.useContext(GameContext);
 
-  const [purchasedItems, setPurchasedItems] = React.useState({
-    cursor: 0,
-    grandma: 0,
-    farm: 0
-  });
-
+///INCREMENT FUNCTION
   const incrementCookies = () => {
     setNumCookies(c => c + 1);
   };
-
+///COOKIE UPDATE
   useInterval(() => {
     const numOfGeneratedCookies = calculateCookiesPerSecond(purchasedItems);
-
     setNumCookies(numCookies + numOfGeneratedCookies);
   }, 1000);
-
+///TITLE
   React.useEffect(() => {
     document.title = `${numCookies} cookies - Cookie Clicker Workshop`;
-
     return () => {
       document.title = 'Cookie Clicker Workshop';
     };
   }, [numCookies]);
-
+///CLICK ON SPACEBAR
   React.useEffect(() => {
     const handleKeydown = ev => {
       if (ev.code === 'Space') {
         incrementCookies();
       }
     };
-
     window.addEventListener('keydown', handleKeydown);
-
     return () => {
       window.removeEventListener('keydown', handleKeydown);
     };
@@ -92,8 +71,7 @@ const Game = () => {
                 if (numCookies < item.cost) {
                   alert('Cannot afford item');
                   return;
-                }
-
+                };
                 setNumCookies(numCookies - item.cost);
                 setPurchasedItems({
                   ...purchasedItems,

@@ -20,7 +20,7 @@ The product manager comes to your desk, and tells you that there are two new req
 
 2. Similarly: if you close and reopen the tab, you shouldn't be reset to 1000 cookies! We want to ensure that the progress is saved and restored.
 
-This exercuse is left as an exercise. The main goal of this exercise is to **create connections in your brain**, to deepen your understanding of React, and the best way to do that is to puzzle it out.
+This exercise is left as an exercise. The main goal of this exercise is to **create connections in your brain**, to deepen your understanding of React, and the best way to do that is to puzzle it out.
 
 (That said, if you're stuck for 15+ minutes, please do ask for help!)
 
@@ -28,7 +28,7 @@ This exercuse is left as an exercise. The main goal of this exercise is to **cre
 
 - For lifting state up, you'll want to pull all the state up into `App`, and then pass it down via props.
 - The list of `items` can be pulled into a `data.js` file, and imported in both `App` and `Game`.
-- For persisting across closing and reopening the tab, you can use the localStorage API. You can create a `usePersistedState` hook, which works exactly the same as the `React.useState` hook, but which also stores the value in localStorage on every update, and reads the initial value from localStorage. It should be used like this:
+- For persisting across closing and reopening the tab, you can use the localStorage API. You can make a custom hook, perhaps named `usePersistedState`, which works exactly the same as the `React.useState` hook, but which also stores the value in localStorage on every update, and reads the initial value from localStorage. It should be used like this:
 
 ```js
 const [numCookies, setNumCookies] = usePersistedState(1000, "num-cookies");
