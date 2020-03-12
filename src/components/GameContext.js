@@ -1,6 +1,6 @@
 import React from 'react';
 import items from './Data';
-import useInterval from '../hooks/use-interval.hook';
+// import useInterval from '../hooks/use-interval.hook';
 
 
 export const GameContext = React.createContext(null);
@@ -28,30 +28,6 @@ export const GameProvider = ({ children }) => {
         grandma: 0,
         farm: 0
     }, "purchased-items");
-
-///COOKIE UPDATE
-    useInterval(() => {
-        const numOfGeneratedCookies = calculateCookiesPerSecond(purchasedItems);
-        setNumCookies(numCookies + numOfGeneratedCookies);
-    }, 1000);
-
-//"COUNTS" COOKIES WHEN CLOSED
-    let firstTime = (new Date()).getTime();
-    const [time, setTime] = usePersistedState(firstTime, "last-date");
-    React.useEffect(() => {
-        let date = (new Date()).getTime();
-        let diff = Math.abs(date - time);
-        let cookieHaul = Math.floor(diff/1000)*(calculateCookiesPerSecond(purchasedItems)) + numCookies;
-        setNumCookies(cookieHaul);
-        
-        return () => {
-            let newTime = (new Date()).getTime();
-            setTime(newTime);
-        };
-    // eslint-disable-next-line
-    }, []);
-    //on mount ^
-    //on dismount: setTime(new Date)
     
     //COOKIES PER SECOND
     const calculateCookiesPerSecond = purchasedItems => {

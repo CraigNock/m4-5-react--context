@@ -2,15 +2,48 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-// import useInterval from '../hooks/use-interval.hook';
+import useInterval from '../hooks/use-interval.hook';
+import useKeydown from '../hooks/useKeydown';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 import cookieSrc from '../cookie.svg';
 import Item from './Item';
 import items from './Data';
 import {GameContext} from './GameContext';
 
+//FUNCTION TO PERSIST DATA IN LOCAL STORAGE
+const usePersistedState = (defaultValue, key) => {
+  const [state, setState] = React.useState(
+  () => JSON.parse(localStorage.getItem(key)) || defaultValue);
+  
+  React.useEffect(() => {
+      localStorage.setItem(key, JSON.stringify(state));
+  }, [key, state]);
+  return [state, setState];
+};
+
+
 
 const Game = () => {
+//"COUNTS" COOKIES WHEN CLOSED
+  let firstTime = (new Date()).getTime();
+  const [time, setTime] = usePersistedState(firstTime, "last-date");
+    React.useEffect(() => {
+      let date = (new Date()).getTime();
+      let diff = Math.abs(date - time);
+      let cookieHaul = Math.floor(diff/1000)*(calculateCookiesPerSecond(purchasedItems)) + numCookies;
+      setNumCookies(cookieHaul);
+  // eslint-disable-next-line
+  }, []);
+
+///COOKIE UPDATE
+  useInterval(() => {
+    const numOfGeneratedCookies = calculateCookiesPerSecond(purchasedItems);
+    setNumCookies(numCookies + numOfGeneratedCookies);
+    let newTime = (new Date()).getTime();
+    setTime(newTime);
+}, 1000);
+
   //CONTEXT
   const {numCookies, setNumCookies, purchasedItems, setPurchasedItems, calculateCookiesPerSecond} = React.useContext(GameContext);
 
@@ -20,25 +53,11 @@ const Game = () => {
   };
 
 ///TITLE
-  React.useEffect(() => {
-    document.title = `${numCookies} cookies - Cookie Clicker Workshop`;
-    return () => {
-      document.title = 'Cookie Clicker Workshop';
-    };
-  }, [numCookies]);
-///CLICK ON SPACEBAR
-  React.useEffect(() => {
-    const handleKeydown = ev => {
-      if (ev.code === 'Space') {
-        incrementCookies();
-      }
-    };
-    window.addEventListener('keydown', handleKeydown);
-    return () => {
-      window.removeEventListener('keydown', handleKeydown);
-    };
-  });
+  useDocumentTitle(`${numCookies} cookies - Cookie Clicker Workshop`, 'Cookie Clicker Workshop')
 
+///CLICK ON SPACEBAR
+  useKeydown('Space', incrementCookies);
+  
   return (
     <Wrapper>
       <GameArea>
