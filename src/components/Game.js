@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import useInterval from '../hooks/use-interval.hook';
+// import useInterval from '../hooks/use-interval.hook';
 
 import cookieSrc from '../cookie.svg';
 import Item from './Item';
@@ -18,11 +18,7 @@ const Game = () => {
   const incrementCookies = () => {
     setNumCookies(c => c + 1);
   };
-///COOKIE UPDATE
-  useInterval(() => {
-    const numOfGeneratedCookies = calculateCookiesPerSecond(purchasedItems);
-    setNumCookies(numCookies + numOfGeneratedCookies);
-  }, 1000);
+
 ///TITLE
   React.useEffect(() => {
     document.title = `${numCookies} cookies - Cookie Clicker Workshop`;
@@ -42,10 +38,6 @@ const Game = () => {
       window.removeEventListener('keydown', handleKeydown);
     };
   });
-
-  //retrieve date from local
-  //make new date, override
-  //use newdate , setnnumCookies num + (new-old *1000)*persecond
 
   return (
     <Wrapper>

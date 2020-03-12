@@ -1,5 +1,6 @@
 import React from 'react';
 import items from './Data';
+import useInterval from '../hooks/use-interval.hook';
 
 
 export const GameContext = React.createContext(null);
@@ -7,14 +8,14 @@ export const GameContext = React.createContext(null);
 
 //FUNCTION TO PERSIST DATA IN LOCAL STORAGE
 const usePersistedState = (defaultValue, key) => {
-        const [state, setState] = React.useState(
-        () => JSON.parse(localStorage.getItem(key)) || defaultValue);
+    const [state, setState] = React.useState(
+    () => JSON.parse(localStorage.getItem(key)) || defaultValue);
     
-        React.useEffect(() => {
-            localStorage.setItem(key, JSON.stringify(state));
-        }, [key, state]);
-        return [state, setState];
-    };
+    React.useEffect(() => {
+        localStorage.setItem(key, JSON.stringify(state));
+    }, [key, state]);
+    return [state, setState];
+};
 
 
 //establishes all variables/funcs that would need to be passed down through app, then creates some global provider tags that pass these values
@@ -28,24 +29,30 @@ export const GameProvider = ({ children }) => {
         farm: 0
     }, "purchased-items");
 
-//maybe?
-    const [time, setTime] = usePersistedState(new Date(), "last-date");
+///COOKIE UPDATE
+    useInterval(() => {
+        const numOfGeneratedCookies = calculateCookiesPerSecond(purchasedItems);
+        setNumCookies(numCookies + numOfGeneratedCookies);
+    }, 1000);
+
+//"COUNTS" COOKIES WHEN CLOSED
+    let firstTime = (new Date()).getTime();
+    const [time, setTime] = usePersistedState(firstTime, "last-date");
     React.useEffect(() => {
-        let date = new Date();
-        let diff = Math.abs(date - time);//maybe a string, console logs man
+        let date = (new Date()).getTime();
+        let diff = Math.abs(date - time);
         let cookieHaul = Math.floor(diff/1000)*(calculateCookiesPerSecond(purchasedItems)) + numCookies;
         setNumCookies(cookieHaul);
         
         return () => {
-            setTime(new Date());
+            let newTime = (new Date()).getTime();
+            setTime(newTime);
         };
+    // eslint-disable-next-line
     }, []);
     //on mount ^
     //on dismount: setTime(new Date)
     
-
-
-
     //COOKIES PER SECOND
     const calculateCookiesPerSecond = purchasedItems => {
         return Object.keys(purchasedItems).reduce((acc, itemId) => {
