@@ -25,6 +25,17 @@ const usePersistedState = (defaultValue, key) => {
 
 
 const Game = () => {
+  //CONTEXT
+  const {
+    numCookies, 
+    setNumCookies, 
+    purchasedItems, 
+    setPurchasedItems, 
+    clickValue,
+    setClickValue, 
+    calculateCookiesPerSecond
+  } = React.useContext(GameContext);
+
 //"COUNTS" COOKIES WHEN CLOSED
   let firstTime = (new Date()).getTime();
   const [time, setTime] = usePersistedState(firstTime, "last-date");
@@ -44,12 +55,9 @@ const Game = () => {
     setTime(newTime);
 }, 1000);
 
-  //CONTEXT
-  const {numCookies, setNumCookies, purchasedItems, setPurchasedItems, calculateCookiesPerSecond} = React.useContext(GameContext);
-
 ///INCREMENT FUNCTION
   const incrementCookies = () => {
-    setNumCookies(c => c + 1);
+    setNumCookies(c => c + clickValue);
   };
 
 ///TITLE
@@ -58,13 +66,34 @@ const Game = () => {
 ///CLICK ON SPACEBAR
   useKeydown('Space', incrementCookies);
   
+//ITEM PURCHASING
+  const handleAttemptedPurchase = (item, cost) => {
+    if (numCookies < cost) {
+      alert('Cannot afford item');
+      return;
+    };
+    setNumCookies(numCookies - cost);
+    setPurchasedItems({
+      ...purchasedItems,
+      [item.id]: purchasedItems[item.id] + 1
+    });
+    if (item.type === 'active'){
+      setClickValue(n => n + item.value)
+    };
+  }
+
+
   return (
     <Wrapper>
       <GameArea>
         <Indicator>
           <Total>{numCookies} cookies</Total>
-          <strong>{calculateCookiesPerSecond(purchasedItems)}</strong> cookies
-          per second
+          <p>
+            <strong>{calculateCookiesPerSecond(purchasedItems)}</strong> cookies per second
+          </p>
+          <p>
+            <strong>{clickValue}</strong> cookies per click
+          </p>
         </Indicator>
         <Button onClick={incrementCookies}>
           <Cookie src={cookieSrc} />
@@ -76,23 +105,11 @@ const Game = () => {
         {items.map((item, index) => {
           return (
             <Item
+              item={item}
               key={item.id}
               index={index}
-              name={item.name}
-              cost={item.cost}
-              value={item.value}
               numOwned={purchasedItems[item.id]}
-              handleAttemptedPurchase={() => {
-                if (numCookies < item.cost) {
-                  alert('Cannot afford item');
-                  return;
-                };
-                setNumCookies(numCookies - item.cost);
-                setPurchasedItems({
-                  ...purchasedItems,
-                  [item.id]: purchasedItems[item.id] + 1
-                });
-              }}
+              handleAttemptedPurchase={handleAttemptedPurchase}
             />
           );
         })}

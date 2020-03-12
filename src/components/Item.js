@@ -2,11 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Item = ({
-
+  item,
   index,
-  name,
-  cost,
-  value,
   numOwned,
   handleAttemptedPurchase
 }) => {
@@ -18,12 +15,18 @@ const Item = ({
     }
   }, [index]);
 
+  let cost = item.cost + (item.cost * numOwned);
+
+  let info = (item.type === 'passive')?
+  `Cost: ${cost} cookie(s). Produces ${item.value} cookies/second.`
+  : `Cost: ${cost} cookie(s). Produces +${item.value} cookies/click.`;
+
   return (
-    <Wrapper ref={ref} onClick={handleAttemptedPurchase}>
+    <Wrapper ref={ref} onClick={()=>{handleAttemptedPurchase(item, cost)}}>
       <Left>
-        <Name>{name}</Name>
+        <Name>{item.name}</Name>
         <Info>
-          Cost: {cost} cookie(s). Produces {value} cookies/second.
+          {info}
         </Info>
       </Left>
       <Right>{numOwned}</Right>

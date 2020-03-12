@@ -1,6 +1,6 @@
 import React from 'react';
 import items from './Data';
-// import useInterval from '../hooks/use-interval.hook';
+// import useInterval from '../hooks/use-interval.hook'; 
 
 
 export const GameContext = React.createContext(null);
@@ -26,17 +26,22 @@ export const GameProvider = ({ children }) => {
     const [purchasedItems, setPurchasedItems] = usePersistedState({
         cursor: 0,
         grandma: 0,
-        farm: 0
+        farm: 0,
+        double: 0
     }, "purchased-items");
+    const [clickValue, setClickValue] = usePersistedState(1, "click-value");
     
     //COOKIES PER SECOND
     const calculateCookiesPerSecond = purchasedItems => {
         return Object.keys(purchasedItems).reduce((acc, itemId) => {
         const numOwned = purchasedItems[itemId];
         const item = items.find(item => item.id === itemId);
-        const value = item.value;
-    
-        return acc + value * numOwned;
+        if (item.type !== 'active'){
+            const value = item.value;
+            return acc + value * numOwned;
+        } else {
+            return acc
+        }
         }, 0);
     };
     ////{children} is a special prop to allow for elements that will go between GameProvider tags
@@ -48,6 +53,8 @@ export const GameProvider = ({ children }) => {
             setNumCookies, 
             purchasedItems, 
             setPurchasedItems,
+            clickValue,
+            setClickValue,
             calculateCookiesPerSecond
         }}>
         {children} 
